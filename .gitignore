@@ -1,7 +1,5 @@
-#folders
-Include
-Lib
-Scripts
+#venv
+venv
 
 #Compiled python
 *.pyc
