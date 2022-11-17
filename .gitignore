@@ -1,0 +1,7 @@
+#folders
+Include
+Lib
+Scripts
+
+#Compiled python
+*.pyc
