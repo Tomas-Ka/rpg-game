@@ -4,17 +4,22 @@ from tile import Tile
 from player import Player
 from debug import debug
 
+
 class Level():
     def __init__(self):
         # get the display surface (the screen you can write to)
         self.display_surface = pygame.display.get_surface()
-        
+
         # sprite group setup
         self.visible_sprites = YsortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
 
         self.create_map()
+
+
     def create_map(self):
+        """Loads all the sprites of the game map into the group objects.
+        """        
         for row_index, row in enumerate(WORLD_MAP):
             for col_index, col in enumerate(row):
                 x = col_index * TILESIZE
@@ -22,33 +27,37 @@ class Level():
                 if col == "x":
                     Tile((x, y), [self.visible_sprites, self.obstacle_sprites])
                 if col == "p":
-                    self.player = Player((x, y), [self.visible_sprites], self.obstacle_sprites)
-                    
-                
-    
+                    self.player = Player(
+                        (x, y), [
+                            self.visible_sprites], self.obstacle_sprites)
+
+
     def run(self):
-        # update and draw the game
+        """Updates and draws all sprites.
+        """
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
-        
+
 
 class YsortCameraGroup(pygame.sprite.Group):
     def __init__(self):
+        # general setup
         super().__init__()
         self.display_surface = pygame.display.get_surface()
         self.half_width = self.display_surface.get_size()[0] // 2
         self.half_height = self.display_surface.get_size()[1] // 2
         self.offset = pygame.math.Vector2()
         self.camera_pos = pygame.math.Vector2(0, 0)
-    
+
+
     def custom_draw(self, player):
-        
         heading = player.rect.center - self.camera_pos
         self.camera_pos += heading * SMOOTH_SPEED
-        
+
         self.offset.x = self.camera_pos.x - self.half_width
         self.offset.y = self.camera_pos.y - self.half_height
-        
-        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
+
+        for sprite in sorted(self.sprites(),
+                             key=lambda sprite: sprite.rect.centery):
             offset_rect = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_rect)
