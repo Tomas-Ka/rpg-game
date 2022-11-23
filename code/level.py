@@ -3,6 +3,8 @@ from settings import *
 from tile import Tile
 from player import Player
 from debug import debug
+from support import *
+from random import choice
 
 
 class Level():
@@ -20,16 +22,31 @@ class Level():
     def create_map(self):
         """Loads all the sprites of the game map into the group objects.
         """        
-        for row_index, row in enumerate(WORLD_MAP):
-            for col_index, col in enumerate(row):
-                x = col_index * TILESIZE
-                y = row_index * TILESIZE
-                if col == "x":
-                    Tile((x, y), [self.visible_sprites, self.obstacle_sprites])
-                if col == "p":
-                    self.player = Player(
-                        (x, y), [
-                            self.visible_sprites], self.obstacle_sprites)
+        layout = {
+            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('../map/map_Grass.csv'),
+            'object': import_csv_layout('../map/map_Objects.csv'),
+        }
+        graphics = {
+            'grass': import_folder("../graphics/grass"),
+            'object': import_folder("../graphics/objects"),
+        }
+        for style, layout in layout.items():
+            for row_index, row in enumerate(layout):
+                for col_index, col in enumerate(row):
+                    if col != '-1':
+                        x = col_index * TILESIZE
+                        y = row_index * TILESIZE
+                        if style == 'boundary':
+                            Tile((x, y), [self.obstacle_sprites], 'invisible')
+                        elif style == 'grass':
+                            random_grass_image = choice(graphics['grass'])
+                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'grass', random_grass_image)
+                        elif style == 'object':
+                            object_sprite = graphics['object'][int(col)]
+                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', object_sprite)
+
+        self.player = Player((2000, 1400), [self.visible_sprites], self.obstacle_sprites)
 
 
     def run(self):
@@ -48,16 +65,28 @@ class YsortCameraGroup(pygame.sprite.Group):
         self.half_height = self.display_surface.get_size()[1] // 2
         self.offset = pygame.math.Vector2()
         self.camera_pos = pygame.math.Vector2(0, 0)
+        
+        # creating the bg/floor
+        self.floor_surface = pygame.image.load('../graphics/tilemap/ground.png').convert()
+        self.floor_rect = self.floor_surface.get_rect(topleft=(0,0))
 
 
     def custom_draw(self, player):
+        # calculating new camera position
         heading = player.rect.center - self.camera_pos
         self.camera_pos += heading * SMOOTH_SPEED
 
+        # getting offset
         self.offset.x = self.camera_pos.x - self.half_width
         self.offset.y = self.camera_pos.y - self.half_height
 
+        # drawing floor
+        offset_rect = self.floor_rect.topleft - self.offset
+        self.display_surface.blit(self.floor_surface, offset_rect)
+
+        # drawing sprites
         for sprite in sorted(self.sprites(),
                              key=lambda sprite: sprite.rect.centery):
             offset_rect = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_rect)
+            
