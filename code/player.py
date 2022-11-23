@@ -13,6 +13,8 @@ class Player(pygame.sprite.Sprite):
         self.speed = 5
         
         self.obstacle_sprites = obstacle_sprites
+        
+        groups[0].camera_pos = pygame.math.Vector2(self.rect.center)
     
     def input(self):
         keys = pygame.key.get_pressed()
