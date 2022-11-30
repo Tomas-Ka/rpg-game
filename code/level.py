@@ -5,6 +5,7 @@ from player import Player
 from debug import debug
 from support import *
 from random import choice
+from weapon import Weapon
 
 
 class Level():
@@ -16,8 +17,10 @@ class Level():
         self.visible_sprites = YsortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
 
-        self.create_map()
+        # attack sprite
+        self.current_attack = None
 
+        self.create_map()
 
     def create_map(self) -> None:
         """Loads all the sprites of the game map into the group objects.
@@ -41,13 +44,35 @@ class Level():
                             Tile((x, y), [self.obstacle_sprites], 'invisible')
                         elif style == 'grass':
                             random_grass_image = choice(graphics['grass'])
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'grass', random_grass_image)
+                            Tile((x,
+                                  y),
+                                 [self.visible_sprites,
+                                  self.obstacle_sprites],
+                                 'grass',
+                                 random_grass_image)
                         elif style == 'object':
                             object_sprite = graphics['object'][int(col)]
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', object_sprite)
+                            Tile(
+                                (x, y), [self.visible_sprites, self.obstacle_sprites], 'object', object_sprite)
 
-        self.player = Player((2000, 1400), [self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((2000,
+                              1400),
+                             [self.visible_sprites],
+                             self.obstacle_sprites,
+                             self.create_attack,
+                             self.destroy_attack)
 
+    def create_attack(self) -> None:
+        """Creates a Weapon object and sets it as the current attack object.
+        """
+        self.current_attack = Weapon(self.player, [self.visible_sprites])
+
+    def destroy_attack(self) -> None:
+        """Destroyes the current attack object.
+        """
+        if self.current_attack:
+            self.current_attack.kill()
+        self.current_attack = None
 
     def run(self) -> None:
         """Updates and draws all sprites.
@@ -65,11 +90,11 @@ class YsortCameraGroup(pygame.sprite.Group):
         self.half_height = self.display_surface.get_size()[1] // 2
         self.offset = pygame.math.Vector2()
         self.camera_pos = pygame.math.Vector2(0, 0)
-        
-        # creating the bg/floor
-        self.floor_surface = pygame.image.load('../graphics/tilemap/ground.png').convert()
-        self.floor_rect = self.floor_surface.get_rect(topleft=(0,0))
 
+        # creating the bg/floor
+        self.floor_surface = pygame.image.load(
+            '../graphics/tilemap/ground.png').convert()
+        self.floor_rect = self.floor_surface.get_rect(topleft=(0, 0))
 
     def custom_draw(self, player: Player) -> None:
         """Customized draw function that y-sorts the sprites before writing them to the screen.
@@ -95,4 +120,3 @@ class YsortCameraGroup(pygame.sprite.Group):
                              key=lambda sprite: sprite.rect.centery):
             offset_rect = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_rect)
-            

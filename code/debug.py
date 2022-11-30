@@ -10,7 +10,7 @@ def debug(info: str, y: int = 10, x: int = 10) -> None:
         info (str): The string to be written
         y (int, optional): Y coordinate of the message. Defaults to 10.
         x (int, optional): X coordinate of the message. Defaults to 10.
-    """    
+    """
     display_surface = pygame.display.get_surface()
     debug_surf = font.render(str(info), True, 'White')
     debug_rect = debug_surf.get_rect(topleft=(x, y))
