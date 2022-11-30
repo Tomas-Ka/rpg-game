@@ -8,7 +8,7 @@ from random import choice
 
 
 class Level():
-    def __init__(self):
+    def __init__(self) -> None:
         # get the display surface (the screen you can write to)
         self.display_surface = pygame.display.get_surface()
 
@@ -19,9 +19,9 @@ class Level():
         self.create_map()
 
 
-    def create_map(self):
+    def create_map(self) -> None:
         """Loads all the sprites of the game map into the group objects.
-        """        
+        """
         layout = {
             'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
             'grass': import_csv_layout('../map/map_Grass.csv'),
@@ -49,7 +49,7 @@ class Level():
         self.player = Player((2000, 1400), [self.visible_sprites], self.obstacle_sprites)
 
 
-    def run(self):
+    def run(self) -> None:
         """Updates and draws all sprites.
         """
         self.visible_sprites.custom_draw(self.player)
@@ -57,7 +57,7 @@ class Level():
 
 
 class YsortCameraGroup(pygame.sprite.Group):
-    def __init__(self):
+    def __init__(self) -> None:
         # general setup
         super().__init__()
         self.display_surface = pygame.display.get_surface()
@@ -71,7 +71,13 @@ class YsortCameraGroup(pygame.sprite.Group):
         self.floor_rect = self.floor_surface.get_rect(topleft=(0,0))
 
 
-    def custom_draw(self, player):
+    def custom_draw(self, player: Player) -> None:
+        """Customized draw function that y-sorts the sprites before writing them to the screen.
+        This function also controlls the camera, and smoothly interpolates it towards the player.
+
+        Args:
+            player (Player): The player object for the game. Is used as the target for the camera.
+        """
         # calculating new camera position
         heading = player.rect.center - self.camera_pos
         self.camera_pos += heading * SMOOTH_SPEED

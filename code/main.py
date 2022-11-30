@@ -6,7 +6,7 @@ from level import Level
 
 
 class Game:
-    def __init__(self):
+    def __init__(self) -> None:
         # general setup
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGTH))
@@ -15,7 +15,7 @@ class Game:
 
         self.level = Level()
 
-    def run(self):
+    def run(self) -> None:
         """Main game loop.
         """        
         while True:

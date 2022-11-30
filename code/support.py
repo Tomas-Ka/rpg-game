@@ -18,7 +18,8 @@ def import_csv_layout(path: str) -> List[List[int]]:
         for row in layout:
             terrain_map.append(row)
         return terrain_map
-    
+
+
 def import_folder(path: str) -> List[pygame.Surface]:
     """Returns all images in a folder parsed as pygame surfaces.
 

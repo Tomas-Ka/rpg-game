@@ -3,7 +3,7 @@ pygame.init()
 font = pygame.font.Font(None, 30)
 
 
-def debug(info: str, y=10, x=10):
+def debug(info: str, y: int = 10, x: int = 10) -> None:
     """Writes a string to screen.
 
     Args:
