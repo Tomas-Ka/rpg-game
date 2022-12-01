@@ -42,7 +42,7 @@ class Player(pygame.sprite.Sprite):
         self.create_attack = create_attack
         self.destroy_attack = destroy_attack
         self.weapon_index = 0
-        self.weapon = list(weapon_data.keys())[self.weapon_index]
+        self.weapon = list(WEAPON_DATA.keys())[self.weapon_index]
         self.can_switch_weapons = True
         self.weapon_switch_time = None
         self.weapon_switch_dureation_cooldown = 200
@@ -140,8 +140,10 @@ class Player(pygame.sprite.Sprite):
             self.can_switch_weapons = False
             self.weapon_switch_time = pygame.time.get_ticks()
             self.weapon_index += 1
-            self.weapon_index % len(weapon_data)
-            self.weapon = list(weapon_data.keys())[self.weapon_index]
+            self.weapon_index %= len(WEAPON_DATA)
+            print(len(WEAPON_DATA))
+            print(self.weapon_index)
+            self.weapon = list(WEAPON_DATA.keys())[self.weapon_index]
 
     def get_status(self) -> None:
         """Changes the player status to reflect the current input.

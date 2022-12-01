@@ -9,7 +9,7 @@ SMOOTH_SPEED = 0.07
 PLAYER_SPEED = 5
 PLAYER_ANIMATION_SPEED = 0.15
 
-weapon_data = {
+WEAPON_DATA = {
     'sword': {
         'cooldown': 100,
         'damage': 15,
