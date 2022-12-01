@@ -141,8 +141,6 @@ class Player(pygame.sprite.Sprite):
             self.weapon_switch_time = pygame.time.get_ticks()
             self.weapon_index += 1
             self.weapon_index %= len(WEAPON_DATA)
-            print(len(WEAPON_DATA))
-            print(self.weapon_index)
             self.weapon = list(WEAPON_DATA.keys())[self.weapon_index]
 
     def get_status(self) -> None:
