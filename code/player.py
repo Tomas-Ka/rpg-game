@@ -27,7 +27,6 @@ class Player(pygame.sprite.Sprite):
 
         # Movement vars
         self.direction = pygame.math.Vector2()
-        self.speed = PLAYER_SPEED
         self.roll_speed_modifier = 1.4
         self.post_roll_speed_modifier = 0.6
         self.obstacle_sprites = obstacle_sprites
@@ -54,6 +53,17 @@ class Player(pygame.sprite.Sprite):
         self.roll_cooldown = 300
         self.roll_time = None
         self.roll_end_time = None
+
+        # stats
+        self.stats = {
+            'health': 100,
+            'energy': 60,
+            'attack': 10,
+            'speed': PLAYER_SPEED}
+        self.health = self.stats['health']
+        self.energy = self.stats['energy']
+        self.exp = 0
+        self.speed = self.stats['speed']
 
     def import_player_assets(self) -> None:
         """Imports the players assets from the player graphics folder and puts them
