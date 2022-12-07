@@ -1,10 +1,9 @@
 import pygame
 from settings import *
 from support import *
-from typing import Union
+from entity import Entity
 
-
-class Player(pygame.sprite.Sprite):
+class Player(Entity):
     def __init__(
             self,
             pos,
@@ -12,7 +11,7 @@ class Player(pygame.sprite.Sprite):
             obstacle_sprites,
             create_attack,
             destroy_attack) -> None:
-        super().__init__(groups)
+        super().__init__(groups, obstacle_sprites)
         # Sprite vars
         self.image = pygame.image.load(
             '../graphics/test/player.png').convert_alpha()
@@ -23,14 +22,10 @@ class Player(pygame.sprite.Sprite):
         # Graphics setup
         self.import_player_assets()
         self.status = 'down_idle'
-        self.frame_index = 0
 
         # Movement vars
-        self.direction = pygame.math.Vector2()
         self.roll_speed_modifier = 1.4
         self.post_roll_speed_modifier = 0.6
-        self.obstacle_sprites = obstacle_sprites
-        groups[0].camera_pos = pygame.math.Vector2(self.rect.center)
 
         # Attack vars
         self.attacking = False
@@ -174,48 +169,6 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.status += "_roll"
 
-    def move(self, speed: Union[int, float]) -> None:
-        """Process movement.
-
-        Args:
-            speed (Union[int, float]): Speed of the player.
-        """
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
-
-        if self.rolling:
-            speed *= self.roll_speed_modifier
-
-        if self.roll_used:
-            speed *= self.post_roll_speed_modifier
-
-        self.hitbox.x += self.direction.x * speed
-        self.collision("horizontal")
-        self.hitbox.y += self.direction.y * speed
-        self.collision("vertical")
-        self.rect.center = self.hitbox.center
-
-    def collision(self, direction: str) -> None:
-        """Process and handle collisions.
-
-        Args:
-            direction (str): Either "horizontal" or "vertical" to process the directions individually.
-        """
-        if direction == "horizontal":
-            for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
-                    if self.direction.x > 0:  # moving right
-                        self.hitbox.right = sprite.hitbox.left
-                    if self.direction.x < 0:  # moving left
-                        self.hitbox.left = sprite.hitbox.right
-        if direction == "vertical":
-            for sprite in self.obstacle_sprites:
-                if sprite.hitbox.colliderect(self.hitbox):
-                    if self.direction.y > 0:  # moving down
-                        self.hitbox.bottom = sprite.hitbox.top
-                    if self.direction.y < 0:  # moving up
-                        self.hitbox.top = sprite.hitbox.bottom
-
     def cooldowns(self) -> None:
         """Function that checks to see if the attack or roll cooldown has been completed.
         """
@@ -256,6 +209,15 @@ class Player(pygame.sprite.Sprite):
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
+    def move(self, speed):
+        speed = self.speed
+        if self.rolling:
+            speed *= self.roll_speed_modifier
+
+        if self.roll_used:
+            speed *= self.post_roll_speed_modifier
+        super().move(speed)
+    
     def update(self) -> None:
         """Is run every frame, gets input and updates movement.
         """

@@ -66,6 +66,9 @@ class Level():
                              self.obstacle_sprites,
                              self.create_attack,
                              self.destroy_attack)
+        
+        # Set camera position to player
+        self.visible_sprites.camera_pos = pygame.math.Vector2(self.player.rect.center)
 
     def create_attack(self) -> None:
         """Creates a Weapon object and sets it as the current attack object.

@@ -9,7 +9,7 @@ class Game:
     def __init__(self) -> None:
         # general setup
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGTH))
+        self.screen = pygame.display.set_mode((WIDTH, HEIGTH), pygame.RESIZABLE)
         pygame.display.set_caption("RPG-Game")
         self.clock = pygame.time.Clock()
 
