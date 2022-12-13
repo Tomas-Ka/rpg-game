@@ -2,6 +2,7 @@ import pygame
 from settings import *
 from support import *
 from entity import Entity
+from typing import Union
 
 class Player(Entity):
     def __init__(
@@ -209,7 +210,12 @@ class Player(Entity):
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
-    def move(self, speed):
+    def move(self, speed: Union[int, float]):
+        """Takes into account if the player is rolling or not before running the move command
+
+        Args:
+            speed (Union[int, float]): Speed of the player.
+        """    
         speed = self.speed
         if self.rolling:
             speed *= self.roll_speed_modifier

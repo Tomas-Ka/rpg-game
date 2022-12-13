@@ -4,6 +4,8 @@ from support import *
 from entity import Entity
 from player import Player
 
+# TODO THIS FILE IS IN PREPARATION FOR NETWORKING, AND NOTHING WILL BE DONE WITH IT FOR A WHILE
+
 class NetworkedPlayer(Player):
     def __init__(self, pos, groups, obstacle_sprites, create_attack, destroy_attack):
         super().__init__(pos, groups, obstacle_sprites, create_attack, destroy_attack)
@@ -21,7 +23,7 @@ class NetworkedPlayer(Player):
         
     
     def update(self) -> None:
-        """Overwrite of the Player update func
+        """Overwrite of the Player update function
         """
         self.listen_network()
         self.cooldowns()
