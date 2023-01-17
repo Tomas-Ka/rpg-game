@@ -6,6 +6,7 @@ class Entity(pygame.sprite.Sprite):
     def __init__(self, groups, obstacle_sprites):
         super().__init__(groups)
         self.frame_index = 0
+        self.animation_speed = PLAYER_ANIMATION_SPEED
         self.direction = pygame.math.Vector2()
         
         self.obstacle_sprites = obstacle_sprites
@@ -14,7 +15,7 @@ class Entity(pygame.sprite.Sprite):
         """Process movement.
 
         Args:
-            speed (Union[int, float]): Speed of the player.
+            speed (Union[int, float]): Speed of the entity.
         """
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
@@ -45,3 +46,16 @@ class Entity(pygame.sprite.Sprite):
                         self.hitbox.bottom = sprite.hitbox.top
                     if self.direction.y < 0:  # moving up
                         self.hitbox.top = sprite.hitbox.bottom
+
+    def animate(self) -> None:
+        """Selects and displays the right frame of the current animation.
+        """
+        animation = self.animations[self.status]
+
+        # loop over frame index
+        self.frame_index += self.animation_speed
+        self.frame_index = self.frame_index % len(animation)
+
+        # set the image
+        self.image = animation[int(self.frame_index)]
+        self.rect = self.image.get_rect(center=self.hitbox.center)

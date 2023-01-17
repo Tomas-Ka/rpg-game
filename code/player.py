@@ -197,19 +197,6 @@ class Player(Entity):
             if current_time - self.weapon_switch_time >= self.weapon_switch_dureation_cooldown:
                 self.can_switch_weapons = True
 
-    def animate(self) -> None:
-        """Selects and displays the right frame of the current animation.
-        """
-        animation = self.animations[self.status]
-
-        # loop over frame index
-        self.frame_index += PLAYER_ANIMATION_SPEED
-        self.frame_index = self.frame_index % len(animation)
-
-        # set the image
-        self.image = animation[int(self.frame_index)]
-        self.rect = self.image.get_rect(center=self.hitbox.center)
-
     def move(self, speed: Union[int, float]):
         """Takes into account if the player is rolling or not before running the move command
 
